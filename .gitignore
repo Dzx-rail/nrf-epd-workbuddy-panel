@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+config.json
+state.json
+last_frame.png
+last_sent.png
+preview*.png
+crop*.png
+*.log
+logs/
+cache/
+.run.lock
+.daemon.pid
+wb_copy.db
+dist/
