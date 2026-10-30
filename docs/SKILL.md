@@ -14,7 +14,7 @@ agent_created: true
 
 ## 适用前提
 
-1. 标签广播名形如 `NRF_EPD_XXXX`，其中 `XXXX` 是 MAC 末两字节（如 `NRF_EPD_EA16` → `…:EA:16`）。
+1. 标签广播名形如 `NRF_EPD_XXXX`，其中 `XXXX` 是 MAC 末两字节（如 `NRF_EPD_9ABC` → `…:9A:BC`）。
    这是 EPD-nRF5 固件的命名规则，可用本技能的协议层驱动。
 2. 主机具备 BLE（Windows 走 WinRT，macOS/Linux 走 BlueZ/CoreBluetooth），Python 3.10+。
 3. 可选：本机运行 WorkBuddy 桌面端，用于读取积分与任务；缺失时右半屏留空，日历部分仍可用。
@@ -28,7 +28,7 @@ pip install -r scripts/requirements.txt
 python scripts/main.py --list-devices
 ```
 
-输出形如 `* NRF_EPD_EA16   F6:88:D9:E9:EA:16  rssi=-62`。若有多块标签，
+输出形如 `* NRF_EPD_9ABC   12:34:56:78:9A:BC  rssi=-62`。若有多块标签，
 `*` 标记的是 config 中已锁定的那块——**多设备场景必须锁定地址**，否则技能会拒绝推送而不是猜。
 
 把探测到的地址写入 `config.json`（由 `assets/config.example.json` 复制而来）：

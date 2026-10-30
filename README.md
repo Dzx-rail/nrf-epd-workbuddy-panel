@@ -83,7 +83,7 @@ python src/main.py --daemon
 
 ```json
 {
-  "device_address": "F6:88:D9:E9:EA:16",
+  "device_address": "12:34:56:78:9A:BC",
   "weather_icon": true,
   "max_tasks": 3,
   "skip_if_unchanged": true,

@@ -196,7 +196,7 @@ def main(argv=None) -> int:
                     help="以当前余额重设基准，例如 --calibrate 2723.23")
     ap.add_argument("--calendar-mode", action="store_true",
                     help="切回固件原版日历（18:00 由排程自动调用）")
-    ap.add_argument("--device", default=None, help="临时指定目标设备地址，如 F6:88:D9:E9:EA:16")
+    ap.add_argument("--device", default=None, help="临时指定目标设备地址，如 12:34:56:78:9A:BC")
     ap.add_argument("--list-devices", action="store_true", help="扫描并列出所有墨水屏")
     args = ap.parse_args(argv)
 

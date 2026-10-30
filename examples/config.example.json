@@ -1,7 +1,7 @@
 {
   "device_name_prefix": "NRF_EPD",
-  "device_address": "F6:88:D9:E9:EA:16",
-  "device_name": "NRF_EPD_EA16",
+  "device_address": "12:34:56:78:9A:BC",
+  "device_name": "NRF_EPD_9ABC",
   "settle_seconds": 18,
   "skip_if_unchanged": true,
   "max_tasks": 3,
@@ -12,5 +12,9 @@
     "step_minutes": 15,
     "restore_calendar": true
   },
-  "location": { "lat": null, "lon": null, "city": null }
+  "location": {
+    "lat": null,
+    "lon": null,
+    "city": null
+  }
 }
