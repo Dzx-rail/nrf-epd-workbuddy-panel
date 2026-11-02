@@ -196,7 +196,7 @@ def main(argv=None) -> int:
                     help="以当前余额重设基准，例如 --calibrate 2723.23")
     ap.add_argument("--calendar-mode", action="store_true",
                     help="切回固件原版日历（18:00 由排程自动调用）")
-    ap.add_argument("--device", default=None, help="临时指定目标设备地址，如 12:34:56:78:9A:BC")
+    ap.add_argument("--device", default=None, help="临时指定目标设备地址，如 F6:88:D9:E9:EA:16")
     ap.add_argument("--list-devices", action="store_true", help="扫描并列出所有墨水屏")
     args = ap.parse_args(argv)
 
@@ -332,12 +332,18 @@ def main(argv=None) -> int:
             prev = json.loads(STATE.read_text("utf-8"))
         except Exception:
             prev = {}
-    if cfg.get("skip_if_unchanged", True) and not args.force and prev.get("digest") == digest:
-        log(f"内容未变（{digest}），跳过刷新")
+    skips = int(prev.get("skips") or 0)
+    max_skips = int(cfg.get("max_skips", 4))
+    if (cfg.get("skip_if_unchanged", True) and not args.force
+            and prev.get("digest") == digest and skips < max_skips):
+        prev["skips"] = skips + 1
+        log(f"内容未变（{digest}），跳过刷新（连续 {skips + 1}/{max_skips}）")
         prev["total_max"] = total_tracked
         prev["daily"] = daily
         STATE.write_text(json.dumps(prev, ensure_ascii=False, indent=2), "utf-8")
         return 0
+    if skips >= max_skips and not args.force:
+        log(f"已连续跳过 {skips} 次，强制刷新一次以更新页脚时间")
 
     if not acquire_lock():
         log("另一实例正在运行，本次跳过")
@@ -359,6 +365,7 @@ def main(argv=None) -> int:
                     "daily": daily,
                     "pushed_at": dt.datetime.now().isoformat(timespec="seconds"),
                     "info": info,
+                    "skips": 0,
                 }, ensure_ascii=False, indent=2), "utf-8")
                 log(f"推送成功 {info.get('packets')} 包 / {info.get('tx_seconds')}s "
                     f"driver={info.get('driver_name')} fw={info.get('firmware')}")
