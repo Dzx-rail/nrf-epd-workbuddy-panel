@@ -63,6 +63,22 @@ def wb_running() -> bool:
         return True
 
 
+def child_exe() -> str:
+    """子进程解释器：优先 python.exe。
+
+    pythonw.exe 是 GUI 子系统的无控制台解释器，但它没有签名，容易被
+    Windows 应用控制策略（Smart App Control / WDAC）静默拦截，报
+    WinError 4551。改用 python.exe 配合 CREATE_NO_WINDOW 同样没有窗口，
+    而且不会触发该策略。
+    """
+    exe = Path(sys.executable)
+    if exe.name.lower() == "pythonw.exe":
+        plain = exe.with_name("python.exe")
+        if plain.exists():
+            return str(plain)
+    return str(exe)
+
+
 def acquire_lock() -> bool:
     try:
         if LOCK.exists() and time.time() - LOCK.stat().st_mtime > 300:
@@ -153,7 +169,7 @@ def daemon() -> None:
     if sc["restore"] and boot >= sc["end"]:
         log("daemon: 当前已过收工时间，立即切回原版日历")
         try:
-            subprocess.run([sys.executable, str(ROOT / "main.py"), "--calendar-mode"],
+            subprocess.run([child_exe(), str(ROOT / "main.py"), "--calendar-mode"],
                            cwd=str(ROOT), timeout=600,
                            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         except Exception as e:
@@ -161,7 +177,7 @@ def daemon() -> None:
     elif sc["start"] <= boot < sc["end"]:
         log("daemon: 处于工作时段，立即刷新一次")
         try:
-            subprocess.run([sys.executable, str(ROOT / "main.py")],
+            subprocess.run([child_exe(), str(ROOT / "main.py")],
                            cwd=str(ROOT), timeout=600,
                            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         except Exception as e:
@@ -176,7 +192,7 @@ def daemon() -> None:
             if remain <= 0:
                 break
             time.sleep(min(remain, 60))
-        cmd = [sys.executable, str(ROOT / "main.py")]
+        cmd = [child_exe(), str(ROOT / "main.py")]
         if action == "calendar":
             cmd.append("--calendar-mode")
         try:

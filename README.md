@@ -130,6 +130,8 @@ python src/main.py --daemon
 - 小字号中文最小 12px，9~10px 必然残缺，调整阈值无法补救（实测数据见 `docs/readability.md`）
 - 定时与自启动依赖平台能力，本仓库在 Windows 上验证；其他平台需换 systemd timer / launchd
 - 三色屏刷新有寿命，不建议把间隔压到 15 分钟以下
+- Windows 的 Smart App Control 可能拦截未签名解释器（`WinError 4551`），
+  表现为定时任务静默失败；改用 python.org 的签名版 Python 即可，详见 `docs/windows-runtime.md`
 
 ## 文档
 
